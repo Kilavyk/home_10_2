@@ -1,6 +1,6 @@
 import pytest
 
-from src.widget import mask_account_card
+from src.widget import mask_account_card, get_date
 
 
 @pytest.mark.parametrize('value, expected', [
@@ -17,8 +17,27 @@ from src.widget import mask_account_card
     ('Счет 73654108430135874305', 'Счет **4305'),
     ('MasterCard 7158300734', 'Неверные данные'),
     ('Visa Platinum 7158300734', 'Неверные данные')
-
 ])
 
 def test_mask_account_card(value, expected):
     assert mask_account_card(value) == expected
+
+
+@pytest.mark.parametrize('data, get_data', [
+    ('2024-03-11T02:26:18.671407', '11.03.2024'),
+    ('2024-03-11T02:26:', '11.03.2024'),
+    ('2024:26:', '11.03.2024'),
+    ('2024-03-11T02:26:18.671407', '11.03.2024'),
+    ('2024    6 11 0226:18.671407', "Некорректная дата"),
+    ('Т:18.202  03 110226Т:18.671407', "Некорректная дата"),
+    ('2024-13-11T02:26:18.671407', "Некорректная дата"),
+    ('2024-13-32T02:26:18.671407', "Некорректная дата"),
+    ('2:26:18.6714072024-03-71 02:26:18.671407', "Некорректная дата"),
+    ('2:26:18.67:26:18.6714072024-03-11 02:26:18.671407', '11.03.2024'),
+    ('2:.6714072024-03-11 02:26:18.671407', '11.03.2024'),
+
+
+])
+
+def test_get_date(data, get_data):
+    assert get_date(data) == get_data
