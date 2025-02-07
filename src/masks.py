@@ -14,7 +14,3 @@ def get_mask_account(account_number: str) -> str:
     if len(account_number) != 20:
         return "Неверный номер счета"
     return "**" + account_number[-4:]
-
-
-# print(get_mask_card_number("7 0 007 9 22 89 606 361"))
-# print(get_mask_account("73654108430135874305"))
