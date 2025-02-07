@@ -1,6 +1,4 @@
-import pytest
-
-from src.masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def test_get_mask_card_number():
@@ -9,7 +7,6 @@ def test_get_mask_card_number():
     assert get_mask_card_number('7 0 007 9 22 89 606 361') == '7000 79** **** 6361'
     assert get_mask_card_number(' ') == 'Неверный номер карты'
     assert get_mask_card_number('abcd') == 'Неверный номер карты'
-
 
 
 def test_get_mask_account():

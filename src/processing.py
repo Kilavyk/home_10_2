@@ -1,5 +1,4 @@
-
-def filter_by_state(transactions: list, state="EXECUTED") -> list:
+def filter_by_state(transactions: list, state: str ="EXECUTED") -> list:
     """Фильтрует список словарей по значению ключа 'state'"""
     new_list = []
     for transaction in transactions:
@@ -8,9 +7,6 @@ def filter_by_state(transactions: list, state="EXECUTED") -> list:
     return new_list
 
 
-
-def sort_by_date(info: list, sort_order=True) -> list:
+def sort_by_date(info: list, sort_order: bool =True) -> list:
     """Сортирует список словарей по дате операции"""
     return sorted(info, key=lambda x: x["date"], reverse=sort_order)
-
-
