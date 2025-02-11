@@ -4,26 +4,27 @@ from src.masks import get_mask_account, get_mask_card_number
 def mask_account_card(info: str) -> str:
     """Функция маскирующая счет или номер карты с названием"""
     number, *name = reversed(info.split(" "))
-    if len(number) == 16:
-        return f"{' '.join(name)} {get_mask_card_number(number)}"
-    else:
+    if name == [""] or name == [" "] or len(number) < 16:
+        return "Неверные данные"
+    elif name == ["Счет"]:
         return f"{' '.join(name)} {get_mask_account(number)}"
-
-
-print(mask_account_card("Счет 64686473678894779589"))
-print(mask_account_card("MasterCard 7158300734726758"))
-print(mask_account_card("Счет 35383033474447895560"))
-print(mask_account_card("Visa Classic 6831982476737658"))
-print(mask_account_card("Visa Platinum 8990922113665229"))
-print(mask_account_card("Visa Gold 5999414228426353"))
-print(mask_account_card("Счет 73654108430135874305"))
+    else:
+        return f"{' '.join(name)} {get_mask_card_number(number)}"
 
 
 def get_date(date_time: str) -> str:
-    """Фунция возвращает день, месяц, год"""
-    date_time = date_time.split("T")
-    year, month, day = date_time[0].split("-")
-    return f"{day}.{month}.{year}"
-
-
-print(get_date("2024-03-11T02:26:18.671407"))
+    """Функция возвращает день, месяц, год"""
+    find_year = date_time.find("202")
+    year = date_time[find_year:find_year + 4]
+    month = date_time[find_year + 5:find_year + 7]
+    day = date_time[find_year + 8:find_year + 10]
+    if (
+        year.isdigit()
+        and month.isdigit()
+        and day.isdigit()
+        and int(year) > 2007
+        and int(month) < 13
+        and int(day) < 32
+    ):
+        return f"{day}.{month}.{year}"
+    return "Некорректная дата"
