@@ -14,10 +14,16 @@ for operation in range(2):
 
 
 
+def transaction_descriptions(items):
+    for item in items:
+        yield item['description']
+
+descriptions = transaction_descriptions(transactions)
+for operation in range(5):
+    print(next(descriptions))
 
 
-def transaction_descriptions():
-    pass
+
 
 
 def card_number_generator():
