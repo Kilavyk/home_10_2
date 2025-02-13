@@ -82,12 +82,15 @@ transactions = (
 def filter_by_currency(items: list, cur: str):
     """ Фильтрует транзакции по валюте 'RUB' """
     for item in items:
-        if cur == item["operationAmount"]["currency"]["code"]:
-            yield item
+        if ("operationAmount" in item
+                and "currency" in item["operationAmount"]
+                and "code" in item["operationAmount"]["currency"]):
+            if cur == item["operationAmount"]["currency"]["code"]:
+                yield item
 
 
-usd_transactions = filter_by_currency(transactions, "RUB")
-for operation in range(2):
+usd_transactions = filter_by_currency(transactions, "USD")
+for operation in range(3):
     print(next(usd_transactions))
 
 
@@ -102,9 +105,11 @@ for operation in range(5):
     print(next(descriptions))
 
 
-def card_number_generator(start: int, end: int):
+def card_number_generator(start: int, stop: int):
     """ Генератор, выдает номера банковских карт в формате ХХХХ ХХХХ ХХХХ ХХХХ """
-    for number in range(start, end + 1):
+    if start > stop:
+        raise ValueError("значение start должно быть меньше или равно значению stop")
+    for number in range(start, stop + 1):
         number_card = str(number).zfill(16)
         formatted_card_number = (number_card[0:4]
                                  + " "
@@ -116,5 +121,5 @@ def card_number_generator(start: int, end: int):
         yield formatted_card_number
 
 
-for card_number in card_number_generator(1, 99):
+for card_number in card_number_generator(100, 999):
     print(card_number)
