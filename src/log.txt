@@ -14,3 +14,13 @@
 22.02.2025 14:32:37 --> error: ValueError: Значения должны быть числом --> (1, '2'), {}
 22.02.2025 14:32:51 --> my_function --> OK
 22.02.2025 14:32:51 --> error: ValueError: Значения должны быть числом --> (1, '2'), {}
+22.02.2025 16:24:13 --> my_function --> OK
+22.02.2025 16:24:13 --> error: TypeError: unsupported operand type(s) for +: 'int' and 'str' --> (1, '2'), {}
+22.02.2025 16:24:45 --> my_function --> OK
+22.02.2025 16:24:45 --> error: TypeError: unsupported operand type(s) for +: 'int' and 'str' --> (1, '2'), {}
+22.02.2025 16:24:58 --> my_function --> OK
+22.02.2025 16:24:58 --> my_function --> OK
+22.02.2025 16:26:47 --> my_function --> OK
+22.02.2025 16:26:47 --> error: TypeError: --> (1, '2'), {}
+22.02.2025 16:28:00 --> my_function --> OK
+22.02.2025 16:28:00 --> TypeError: --> (1, '2'), {}
