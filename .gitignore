@@ -175,3 +175,4 @@ cython_debug/
 
 #Папка песочница
 sandbox/
+sandbox_JSON
