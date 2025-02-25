@@ -18,85 +18,27 @@
 4. **`widget.py`** — предоставляет функции для маскировки данных и работы с датами.
 5. **`decorators.py`** — декоратор `log` используется для логирования успешного выполнения функции или возникших ошибок. Логи могут записываться в файл или выводиться в консоль.
 
----
+## Описание проекта
 
-## Основные функции
+Проект включает две основные функции:
+1. **`filter_by_state`** — фильтрует список транзакций по значению ключа `state`. По умолчанию возвращает только транзакции со статусом `EXECUTED`.
+2. **`sort_by_date`** — сортирует список транзакций по дате операции. По умолчанию сортировка выполняется в порядке убывания (от новых к старым).
 
-### 1. Маскировка номеров карт
-Функция `get_mask_card_number` маскирует номер карты, оставляя видимыми 
-первые 6 и последние 4 цифры.
+### Пример кода
 
-**Пример кода**
-```
-  def get_mask_card_number(card_number: str) -> str:
-      """Маскирует цифры и разбивает на блоки номер карты"""
-      card_number = card_number.replace(" ", "")
-      if len(card_number) != 16:
-          return "Неверный номер карты"
-      mask_number = card_number[0:6] + "******" + card_number[-4:]
-      group = mask_number[0:4] + " " + mask_number[4:8] + " " + mask_number[8:12] + " " + mask_number[12:16]
-      return group
-```
-
-### 2. Маскировка номеров счетов
-Функция `get_mask_account` маскирует номер счёта, оставляя видимыми 
-последние 4 цифры.
-
-**Пример кода**
-```
-  def get_mask_account(account_number: str) -> str:
-      """Маскирует номер счёта"""
-      account_number = account_number.replace(" ", "")
-      if len(account_number) != 20:
-          return "Неверный номер счета"
-      return "**" + account_number[-4:]
-```
+```python
+def filter_by_state(transactions: list, state='EXECUTED') -> list:
+    """ Фильтрует список словарей по значению ключа 'state' """
+    new_list = []
+    for transaction in transactions:
+        if transaction.get('state') == state:
+            new_list.append(transaction)
+    return new_list
 
 
-### 3. Маскировка данных
-Функция `get_date` извлекает дату из строки и возвращает её в формате дд.мм.гггг.
-
-**Пример кода**
-```
-  def get_date(date_time: str) -> str:
-      """Функция возвращает день, месяц, год"""
-      find_year = date_time.find("202")
-      year = date_time[find_year:find_year + 4]
-      month = date_time[find_year + 5:find_year + 7]
-      day = date_time[find_year + 8:find_year + 10]
-      if (
-          year.isdigit()
-          and month.isdigit()
-          and day.isdigit()
-          and int(year) > 2007
-          and int(month) < 13
-          and int(day) < 32
-      ):
-          return f"{day}.{month}.{year}"
-      return "Некорректная дата"
-```
-
-### 4. Фильтрация и сортировка транзакций
-Функция `filter_by_state` фильтрует транзакции по статусу (например, "EXECUTED").
-
-**Пример кода**
-```
-  def filter_by_state(transactions: list, state: str ="EXECUTED") -> list:
-      """Фильтрует список словарей по значению ключа 'state'"""
-      new_list = []
-      for transaction in transactions:
-          if transaction.get("state") == state:
-              new_list.append(transaction)
-      return new_list
-```
-
-Функция `sort_by_date` сортирует транзакции по дате.
-
-**Пример кода**
-```
-  def sort_by_date(info: list, sort_order: bool =True) -> list:
-      """Сортирует список словарей по дате операции"""
-      return sorted(info, key=lambda x: x["date"], reverse=sort_order)
+def sort_by_date(info: list, sort_order=True) -> list:
+    """Сортирует список словарей по дате операции"""
+    return sorted(info, key=lambda x: x['date'], reverse=sort_order)
 ```
 
 ### 5. Фильтрация транзакций по валюте
@@ -196,50 +138,50 @@ def my_function(x: int, y: int) -> int:
     return x + y
 ```
 
+#
+#
+#
+#
 
+### Добавленные тесты
+В проект были добавлены тесты для проверки корректности работы функций. Тесты охватывают следующие модули:
 
+#### 1. Модуль `src.masks`
+- **`get_mask_card_number`**: Проверка маскирования номеров карт.
+  - Корректное маскирование номеров карт.
+  - Обработка некорректных данных (пустая строка, нечисловые символы).
+- **`get_mask_account`**: Проверка маскирования номеров счетов.
+  - Корректное маскирование номеров счетов.
+  - Обработка некорректных данных (неверная длина номера счета).
 
----
+#### 2. Модуль `src.processing`
+- **`filter_by_state`**: Проверка фильтрации данных по состоянию (`EXECUTED`, `CANCELED`).
+- **`sort_by_date`**: Проверка сортировки данных по дате.
 
-## Добавленные тесты
-В проект были добавлены тесты для проверки корректности работы функций. 
+#### 3. Модуль `src.widget`
+- **`mask_account_card`**: Проверка маскирования номеров карт и счетов в зависимости от типа карты/счета.
+  - Корректное маскирование для различных типов карт (Maestro, MasterCard, Visa и т.д.).
+  - Обработка некорректных данных (пустая строка, неверная длина номера).
+- **`get_date`**: Проверка форматирования даты.
+  - Корректное преобразование даты из формата ISO в читаемый формат.
+  - Обработка некорректных данных (неверный формат даты).
+
 ### Примеры тестов
 #### Для `get_mask_card_number`
-```
-  def test_get_mask_card_number():
-      assert get_mask_card_number('7000792289606361') == '7000 79** **** 6361'
-      assert get_mask_card_number('1234 5678 9012 3456') == '1234 56** **** 3456'
-      assert get_mask_card_number('7 0 007 9 22 89 606 361') == '7000 79** **** 6361'
-      assert get_mask_card_number(' ') == 'Неверный номер карты'
-      assert get_mask_card_number('abcd') == 'Неверный номер карты'
+```python
+assert get_mask_card_number('7000792289606361') == '7000 79** **** 6361'
+assert get_mask_card_number('1234 5678 9012 3456') == '1234 56** **** 3456'
+assert get_mask_card_number(' ') == 'Неверный номер карты'
 ```
 #### Для `get_mask_account`
+```python
+assert get_mask_account('73654108430135874305') == '**4305'
+assert get_mask_account('73654108') == 'Неверный номер счета'
 ```
-  def test_get_mask_account():
-      assert get_mask_account('73654108430135874305') == '**4305'
-      assert get_mask_account('73654108430135874305123') == 'Неверный номер счета'
-      assert get_mask_account('73654108') == 'Неверный номер счета'
-      assert get_mask_account('7365 410 843 013 587 43 05') == '**4305'
-  ```
 #### Для `mask_account_card`
-```
-  @pytest.mark.parametrize('value, expected', [
-      ('Maestro 1596837868705199', 'Maestro 1596 83** **** 5199'),
-      ('Счет 64686473678894779589', 'Счет **9589'),
-      ('MasterCard 7158300734726758', 'MasterCard 7158 30** **** 6758'),
-      ('Счет 35383033474447895560', 'Счет **5560'),
-      ('Visa Classic 6831982476737658', 'Classic Visa 6831 98** **** 7658'),
-      ('Visa Platinum 8990922113665229', 'Platinum Visa 8990 92** **** 5229'),
-      ('Visa Gold 5999414228426353', 'Gold Visa 5999 41** **** 6353'),
-      ('Счет 73654108430135874305', 'Счет **4305'),
-      ('', 'Неверные данные'),
-      ('Счет 73654108430135874305', 'Счет **4305'),
-      ('Счет 73654108430135874305', 'Счет **4305'),
-      ('MasterCard 7158300734', 'Неверные данные'),
-      ('Visa Platinum 7158300734', 'Неверные данные')
-  ])
-  def test_mask_account_card(value, expected):
-    assert mask_account_card(value) == expected
+```python
+assert mask_account_card('Maestro 1596837868705199') == 'Maestro 1596 83** **** 5199'
+assert mask_account_card('Счет 64686473678894779589') == 'Счет **9589'
 ```
 ### Для `get_date`
 ```
@@ -393,9 +335,9 @@ def test_log_file_errors():
 ```
 
 ### Запуск тестов
-Для запуска тестов используйте команду:
+#### Для запуска тестов используйте команду:
 ```python
-    pytest tests/
+pytest tests/
 ```
 
 ## Установка и использование
