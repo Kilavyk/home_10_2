@@ -3,7 +3,6 @@ import os
 
 def outputting_transactions_from_file(input_file=None) -> list:
     """Выводит транзакции из файла если найден файл с транзакциями."""
-
     try:
         current_file = os.path.abspath(__file__)
         project_root = os.path.dirname(os.path.dirname(current_file))
@@ -25,4 +24,3 @@ if __name__ == '__main__':
     input_file = 'operations.json'
     transactions = outputting_transactions_from_file(input_file)
     print(transactions)
-
