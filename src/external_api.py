@@ -9,13 +9,12 @@ from src.utils import outputting_transactions_from_file
 
 load_dotenv(".env")
 
+
 def currency_converter(cur_input: str, cer_output: str, value: float) -> float:
-    """ Функция конвертирует валюту в рубли"""
+    """Функция конвертирует валюту в рубли"""
     url = f"https://api.apilayer.com/exchangerates_data/convert?to={cer_output}&from={cur_input}&amount={value}"
     payload = {}
-    headers= {
-        "apikey": os.getenv("API_KEY")
-    }
+    headers = {"apikey": os.getenv("API_KEY")}
     response = requests.request("GET", url, headers=headers, data=payload)
     result = response.text
     value = json.loads(result)["result"]
@@ -37,8 +36,7 @@ def return_amount_from_json(file: List[Dict[str, Any]]) -> Union[str, None]:
     return
 
 
-
-if __name__ == '__main__':
-    converter = currency_converter("USD", "RUB", 100)
-    print(converter)
-    return_amount_from_json(outputting_transactions_from_file('operations.json'))
+# if __name__ == '__main__':
+#     converter = currency_converter("USD", "RUB", 100)
+#     print(converter)
+#     return_amount_from_json(outputting_transactions_from_file('operations.json'))
