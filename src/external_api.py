@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Union, List, Dict, Any
 
 import requests
 from dotenv import load_dotenv
@@ -13,24 +14,31 @@ def currency_converter(cur_input: str, cer_output: str, value: float) -> float:
     url = f"https://api.apilayer.com/exchangerates_data/convert?to={cer_output}&from={cur_input}&amount={value}"
     payload = {}
     headers= {
-      # "apikey": "qj9eHxTwpTwI4inokeaXkyOtBW1pnEg6"
         "apikey": os.getenv("API_KEY")
     }
     response = requests.request("GET", url, headers=headers, data=payload)
-    status_code = response.status_code
     result = response.text
     value = json.loads(result)["result"]
     return value
 
 
-
+def return_amount_from_json(file: List[Dict[str, Any]]) -> Union[str, None]:
+    """Функция принимает файл JSON и возвращает из файла значение транзакций в рублях"""
+    try:
+        for item in file:
+            code = item["operationAmount"]["currency"]["code"]
+            amount = float(item["operationAmount"]["amount"])
+            if code != "RUB":
+                print(f"{amount} {code} = {currency_converter(code, "RUB", amount)} RUB")
+            else:
+                print(f"{amount} {code}")
+    except:
+        print("Ошибка данных")
+    return
 
 
 
 if __name__ == '__main__':
-    # result = currency_converter("eur", "rub", 100)
-    # print(result)
-    # print(outputting_transactions_from_file('operations.json'))
-    # print(sum_amount(outputting_transactions_from_file('operations.json')))
-    print(sum_amount())
-
+    converter = currency_converter("USD", "RUB", 100)
+    print(converter)
+    return_amount_from_json(outputting_transactions_from_file('operations.json'))
