@@ -15,6 +15,7 @@ file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(me
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 
+
 def outputting_transactions_from_file(input_file=None) -> list:
     """Выводит транзакции из файла если найден файл с транзакциями."""
     logger.info("Функция начала работу")
@@ -32,12 +33,12 @@ def outputting_transactions_from_file(input_file=None) -> list:
         else:
             logger.error("Файл найден, но он пустой или в нём нет списка, вернули пустой список")
             return []
-    except:
-        logger.error("Произошла ошибка, вернули пустой список")
+    except (Exception) as e:
+        logger.error(f"Произошла ошибка, вернули пустой список {e}")
         return []
 
 
-if __name__ == '__main__':
-    input_file = 'operations.json'
-    transactions = outputting_transactions_from_file(input_file)
-    print(transactions)
+# if __name__ == '__main__':
+#     input_file = 'operations.json'
+#     transactions = outputting_transactions_from_file(input_file)
+#     print(transactions)
