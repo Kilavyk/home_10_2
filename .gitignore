@@ -128,7 +128,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+src/.env
 .venv
 env/
 venv/
@@ -175,3 +175,4 @@ cython_debug/
 
 #Папка песочница
 sandbox/
+sandbox_JSON
