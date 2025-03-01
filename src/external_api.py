@@ -31,8 +31,8 @@ def return_amount_from_json(file: List[Dict[str, Any]]) -> Union[str, None]:
                 print(f"{amount} {code} = {currency_converter(code, "RUB", amount)} RUB")
             else:
                 print(f"{amount} {code}")
-    except:
-        print("Ошибка данных")
+    except (Exception) as e:
+        print(f"Ошибка данных {e}")
     return
 
 
