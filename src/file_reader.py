@@ -7,10 +7,9 @@ def read_file_scv(input_file):
     """Выводит транзакции из файла .csv в виде списка словарей"""
     project_root = os.path.dirname(os.path.dirname(__file__))
     data_file = os.path.join(project_root, "data", input_file)
-    with open(data_file) as file:
+    with open(data_file, encoding="utf-8") as file:
         reader = csv.DictReader(file, delimiter=';')
-        for row in reader:
-            print(row)
+        return list(reader)
 
 
 def read_file_xlsx(input_file):
@@ -23,6 +22,6 @@ def read_file_xlsx(input_file):
 
 
 # if __name__ == '__main__':
-#    read_file_scv("transactions.csv")
+#    print(read_file_scv("transactions.csv"))
 #    print(read_file_xlsx("transactions_excel.xlsx"))
 
