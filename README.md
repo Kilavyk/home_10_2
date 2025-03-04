@@ -4,7 +4,10 @@
 банковскими транзакциями, включая фильтрацию, сортировку, 
 маскировку данных и генерацию номеров карт. 
 Добавлен декоратор для логирования выполнения функций и проверки аргументов.
-В проекте также реализованы тесты для проверки корректности работы функций.
+Добавлен функционал для чтений файлов json, csv, xlsx, и конвертации валюты 
+в рубли по средствам API из выполненных транзакций.
+А так же выполнено логирование функций.
+В проекте реализованы тесты для проверки корректности работы функций.
 
 ---
 
@@ -17,6 +20,9 @@
 3. **`processing.py`** — содержит функции для фильтрации и сортировки транзакций.
 4. **`widget.py`** — предоставляет функции для маскировки данных и работы с датами.
 5. **`decorators.py`** — декоратор `log` используется для логирования успешного выполнения функции или возникших ошибок. Логи могут записываться в файл или выводиться в консоль.
+6. **`utils.py`** — реализована функция для чтений файла формата json
+7. **`external_api.py`** — функция конвертирует валюты по средствам API
+8. **`file_reader.py`** — содержит функции для чтения файлов csv, xlsx.
 
 ## Описание проекта
 
@@ -113,6 +119,7 @@ def my_function(x, y):
 ```
 #### Декоратор `check_that_agr_is`
 проверяет аргументы функции с помощью предиката. Если аргументы не удовлетворяют условию, выбрасывается исключение ValueError.
+
 **Пример кода:**
 ```
 @check_that_agr_is(predicate_is_int, "Значения должны быть целыми числами")
@@ -122,6 +129,7 @@ def my_function(x, y):
 
 #### Функция `predicate_is_int`
 проверяет, являются ли все переданные значения целыми числами.
+
 **Пример кода:**
 ```
 def predicate_is_int(*values):
@@ -130,6 +138,7 @@ def predicate_is_int(*values):
 
 #### Функция `my_function` 
 возвращает сумму двух чисел. Она использует декораторы log и check_that_agr_is для логирования и проверки аргументов.
+
 **Пример кода:**
 ```
 @log(filename="log.txt")
@@ -137,34 +146,65 @@ def predicate_is_int(*values):
 def my_function(x: int, y: int) -> int:
     return x + y
 ```
+### 9. Чтение файла json
+#### Функция `outputting_transactions_from_file`
+строит путь к файлу и выводит содержимое файла, если файл не найден или он пустой возвращает пустой список.
 
-#
-#
-#
-#
+**Пример кода:**
+```
+def outputting_transactions_from_file(input_file=None) -> list:
+    """Выводит транзакции из файла если найден файл с транзакциями."""
+    try:
+        project_root = os.path.dirname(os.path.dirname(__file__))
+        data_file = os.path.join(project_root, "data", input_file)
+        with open(data_file, "r", encoding="utf-8") as file:
+            data = json.load(file)
+        if isinstance(data, list):
+            return data
+        else:
+            return []
+    except (Exception) as e:
+        return []
+```
+
+### 9. Чтение файла csv и xlsx
+
+#### Функция `read_file_scv`
+читает данные из CSV-файла и возвращает их в виде списка словарей
+
+**Пример кода:**
+```
+def read_file_scv(input_file: str) -> list:
+    """Выводит транзакции из файла .csv в виде списка словарей"""
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    data_file = os.path.join(project_root, "data", input_file)
+    with open(data_file, encoding="utf-8") as file:
+        reader = csv.DictReader(file, delimiter=";")
+        return list(reader)
+```
+
+#### Функция `read_file_xlsx`
+читает данные из Excel-файла и возвращает их в виде списка словарей
+
+**Пример кода:**
+```
+def read_file_xlsx(input_file: str) -> list:
+    """Выводит транзакции из файла .xlsx в виде словарей"""
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    data_file = os.path.join(project_root, "data", input_file)
+    df = pd.read_excel(data_file)
+    reader = df.to_dict(orient="records")
+    return reader
+```
+
+
+
+---
 
 ### Добавленные тесты
-В проект были добавлены тесты для проверки корректности работы функций. Тесты охватывают следующие модули:
+В проект были добавлены тесты для проверки корректности
+работы функций. Тесты охватывают следующие функции:
 
-#### 1. Модуль `src.masks`
-- **`get_mask_card_number`**: Проверка маскирования номеров карт.
-  - Корректное маскирование номеров карт.
-  - Обработка некорректных данных (пустая строка, нечисловые символы).
-- **`get_mask_account`**: Проверка маскирования номеров счетов.
-  - Корректное маскирование номеров счетов.
-  - Обработка некорректных данных (неверная длина номера счета).
-
-#### 2. Модуль `src.processing`
-- **`filter_by_state`**: Проверка фильтрации данных по состоянию (`EXECUTED`, `CANCELED`).
-- **`sort_by_date`**: Проверка сортировки данных по дате.
-
-#### 3. Модуль `src.widget`
-- **`mask_account_card`**: Проверка маскирования номеров карт и счетов в зависимости от типа карты/счета.
-  - Корректное маскирование для различных типов карт (Maestro, MasterCard, Visa и т.д.).
-  - Обработка некорректных данных (пустая строка, неверная длина номера).
-- **`get_date`**: Проверка форматирования даты.
-  - Корректное преобразование даты из формата ISO в читаемый формат.
-  - Обработка некорректных данных (неверный формат даты).
 
 ### Примеры тестов
 #### Для `get_mask_card_number`
@@ -334,9 +374,34 @@ def test_log_file_errors():
     assert "".join(messag.split("-->")[-2:]) == " my_function  OK\n"
 ```
 
+### Для `read_file_scv` 
+```
+@patch("builtins.open")
+@patch("csv.DictReader")
+def test_read_file_scv(mock_dictreader, mock_open_file):
+    mock_open_file.new = mock_open()
+    mock_dictreader.return_value = [{"id": 123}, {"id": 321}]
+    result = read_file_scv("")
+    assert result == [{"id": 123}, {"id": 321}]
+```
+
+### Для `read_file_xlsx` 
+```
+@patch("pandas.read_excel")
+def test_read_file_xlsx(mock_read_excel):
+    mock_df = MagicMock()
+    mock_df.to_dict.return_value = [{"id": 123}, {"id": 321}]
+    mock_read_excel.return_value = mock_df
+
+    result = read_file_xlsx("")
+    assert result == [{"id": 123}, {"id": 321}]
+```
+
+
+
 ### Запуск тестов
 #### Для запуска тестов используйте команду:
-```python
+```
 pytest tests/
 ```
 
