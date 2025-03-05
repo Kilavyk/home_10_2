@@ -21,8 +21,7 @@ def outputting_transactions_from_file(input_file=None) -> list:
     logger.info("Функция начала работу")
     try:
         logger.info("Построение абсолютного пути к файлу 'operations.json'")
-        current_file = os.path.abspath(__file__)
-        project_root = os.path.dirname(os.path.dirname(current_file))
+        project_root = os.path.dirname(os.path.dirname(__file__))
         data_file = os.path.join(project_root, "data", input_file)
         logger.info("Чтение файла")
         with open(data_file, "r", encoding="utf-8") as file:

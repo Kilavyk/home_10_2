@@ -35,4 +35,4 @@ def test_sum_amount_without_conversion(rub_transaction):
 def test_sum_amount_invalid_data(invalid_transaction):
     with patch("builtins.print") as mock_print:
         return_amount_from_json([invalid_transaction])
-        mock_print.assert_called_with("Ошибка данных")
+        mock_print.assert_called_with("Ошибка данных could not convert string to float: 'invalid'")

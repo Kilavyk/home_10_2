@@ -25,7 +25,7 @@ def return_amount_from_json(file: List[Dict[str, Any]]) -> Union[str, None]:
     """Функция принимает файл JSON и возвращает из файла значение транзакций в рублях"""
     try:
         for item in file:
-            code = item["operationAmount"]["currency"]["code"]
+            code = item.get("operationAmount", {}).get("currency", {}).get("code")
             amount = float(item["operationAmount"]["amount"])
             if code != "RUB":
                 print(f"{amount} {code} = {currency_converter(code, "RUB", amount)} RUB")
