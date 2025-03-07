@@ -32,8 +32,8 @@ def outputting_transactions_from_file(input_file=None) -> list:
         else:
             logger.error("Файл найден, но он пустой или в нём нет списка, вернули пустой список")
             return []
-    except (Exception) as e:
-        logger.error(f"Произошла ошибка, вернули пустой список {e}")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Произошла ошибка, вернули пустой список. Файл: {input_file}: {e}")
         return []
 
 
