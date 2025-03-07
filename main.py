@@ -1,8 +1,10 @@
 from src.file_reader import read_file_scv, read_file_xlsx
+from src.processing import filter_by_state
 from src.utils import outputting_transactions_from_file
 
 
 def selecting_processing_file():
+    """ Выбираем с каким файлом будем работать"""
     menu = ("Выберите необходимый пункт меню:"
             "\n 1 - Получить информацию о транзакциях из JSON-файла"
             "\n 2 - Получить информацию о транзакциях из CSV-файла"
@@ -19,13 +21,30 @@ def selecting_processing_file():
         print("Для обработки выбран XLSX-файл")
         return read_file_xlsx("transactions_excel.xlsx") # Открытие файлаXLSX
     else:
-        print("")
+        print("Некорректно указан пункт меню")
         selecting_processing_file()
 
 
+def sending_file_for_filter(file):
+    print("\nВведите статус, по которому необходимо выполнить фильтрацию."
+          "\nДоступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
+    state = input("Введите статус: ").upper()
+
+    if state in ["EXECUTED", "CANCELED", "PENDING"]:
+        return filter_by_state(file, state)
+    else:
+        print(f"\nСтатус операции {state} недоступен.")
+        sending_file_for_filter(file)
+
+
+
 if __name__ == "__main__":
+    # Начало работы, приветствие
     print("Привет! \nДобро пожаловать в программу работы с банковскими транзакциями.")
+
+    file = selecting_processing_file() # В переменной список транзакций из файла
     # print(selecting_processing_file())
-    selecting_processing_file()
-    print("\nВведите статус, по которому необходимо выполнить фильтрацию." 
-            "\nДоступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
+
+    sending_file_for_filter(file) # Выполняем фильтрацию
+    # print(sending_file_for_filtering(file))
+
