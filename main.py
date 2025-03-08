@@ -1,5 +1,6 @@
 from src.file_reader import read_file_scv, read_file_xlsx
 from src.generators import filter_by_currency
+from src.operations_filter import filter_transactions_by_description, search_description
 from src.processing import filter_by_state, sort_by_date
 from src.utils import outputting_transactions_from_file
 
@@ -67,6 +68,18 @@ def show_rub_transactions(file):
         return show_rub_transactions(file) # Запускаем функцию заново
 
 
+def filter_by_word(file):
+    answer = input("\nОтфильтровать список транзакций по определенному слову в описании? Да/Нет\n")
+    if answer.lower() == "да":
+        search_string = input("Варианты фильтрации:\nПеревод организации \nПеревод с карты на карту"
+                              "\nПеревод со счета на счет \nОткрытие вклада \nПеревод с карты на счет\n")
+        return filter_transactions_by_description(file, search_string) # Модуль operations_file.py
+    elif answer.lower() == "нет":
+        return file # Возвращает исходный файл
+    else:
+        print(f"Введено некорректное значение: {answer}")
+        return filter_by_word(file) # Запускаем функцию заново
+
 
 
 if __name__ == "__main__":
@@ -83,4 +96,7 @@ if __name__ == "__main__":
     print(file)
 
     file = show_rub_transactions(file) # Выводим только рублёвые операции или все
+    print(file)
+
+    file = filter_by_word(file) # Сортируем по ключевому слову
     print(file)
