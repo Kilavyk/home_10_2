@@ -1,5 +1,7 @@
+from six import print_
+
 from src.file_reader import read_file_scv, read_file_xlsx
-from src.processing import filter_by_state
+from src.processing import filter_by_state, sort_by_date
 from src.utils import outputting_transactions_from_file
 
 
@@ -37,14 +39,33 @@ def sending_file_for_filter(file):
         sending_file_for_filter(file)
 
 
+def sorting_transactions(file):
+    answer = input("\nОтсортировать операции по дате? Да/Нет").lower()
+    if answer == "да":
+        print("Отсортировать по возрастанию или по убыванию?")
+        sorting_order = input("Введите 'по возрастанию' или 'по убыванию'\n").lower()
+        if sorting_order == "по возрастанию":
+            return sort_by_date(file, sort_order = False) # Сортировка по убыванию
+        elif sorting_order == "по убыванию":
+            return sort_by_date(file, sort_order = True) # Сортировка по возрастанию
+        else: print("Введено некорректное значение")
+        sorting_transactions(file)
+    elif answer == "нет":
+        return file
+    else:
+        print("Введено некорректное значение")
+        return sorting_transactions(file)
+
 
 if __name__ == "__main__":
     # Начало работы, приветствие
     print("Привет! \nДобро пожаловать в программу работы с банковскими транзакциями.")
 
     file = selecting_processing_file() # В переменной список транзакций из файла
-    # print(selecting_processing_file())
+    # print(file)
 
-    sending_file_for_filter(file) # Выполняем фильтрацию
-    # print(sending_file_for_filtering(file))
+    file = sending_file_for_filter(file) # Выполняем фильтрацию
+    # print(file)
 
+    file = sorting_transactions(file) # сортировка по дате и в каком порядке
+    print(file)
