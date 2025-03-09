@@ -23,12 +23,9 @@
 6. **`utils.py`** — реализована функция для чтений файла формата json
 7. **`external_api.py`** — функция конвертирует валюты по средствам API
 8. **`file_reader.py`** — содержит функции для чтения файлов csv, xlsx.
+9. **`operations_filter.py`** — функции фильтрует транзакции по строке в описании и подсчитывает количество транзакций по категориям
 
 ## Описание проекта
-
-Проект включает две основные функции:
-1. **`filter_by_state`** — фильтрует список транзакций по значению ключа `state`. По умолчанию возвращает только транзакции со статусом `EXECUTED`.
-2. **`sort_by_date`** — сортирует список транзакций по дате операции. По умолчанию сортировка выполняется в порядке убывания (от новых к старым).
 
 ### Пример кода
 
@@ -47,12 +44,12 @@ def sort_by_date(info: list, sort_order=True) -> list:
     return sorted(info, key=lambda x: x['date'], reverse=sort_order)
 ```
 
-### 5. Фильтрация транзакций по валюте
+### 1. Фильтрация транзакций по валюте
 Функция `filter_by_currency` фильтрует список
 транзакций по указанной валюте
 
 **Пример кода:**
-```
+```python
   def filter_by_currency(items: list, cur: str):
       """ Фильтрует транзакции по валюте 'RUB' """
       for item in items:
@@ -67,11 +64,11 @@ def sort_by_date(info: list, sort_order=True) -> list:
       print(next(usd_transactions))
 ```
 
-### 6. Получение описаний транзакций
+### 2. Получение описаний транзакций
 Функция `transaction_descriptions` возвращает описания пяти транзакций из списка.
 
 **Пример кода:**
-```
+```python
   def transaction_descriptions(items: list[dict[str, object]]):
       """ Возвращает описание транзакции """
       for item in items:
@@ -83,12 +80,12 @@ def sort_by_date(info: list, sort_order=True) -> list:
       print(next(descriptions))
 ```
 
-### 7. Генерация номеров банковских карт 
+### 3. Генерация номеров банковских карт 
 Функция `card_number_generator` генерирует номера банковских карт 
 в формате XXXX XXXX XXXX XXXX.
 
 **Пример кода:**
-```
+```python
   def card_number_generator(start: int, stop: int):
       """ Генератор, выдает номера банковских карт в формате ХХХХ ХХХХ ХХХХ ХХХХ """
       if start > stop:
@@ -108,11 +105,11 @@ def sort_by_date(info: list, sort_order=True) -> list:
   for card_number in card_number_generator(100, 999):
       print(card_number)
 ```
-### 8. Логирования функции
+### 4. Логирования функции
 Декоратор `log` используется для логирования успешного выполнения функции или возникших ошибок. Логи могут записываться в файл или выводиться в консоль.
 
 **Пример кода:**
-```
+```python
 @log(filename="log.txt")
 def my_function(x, y):
     return x + y
@@ -121,7 +118,7 @@ def my_function(x, y):
 проверяет аргументы функции с помощью предиката. Если аргументы не удовлетворяют условию, выбрасывается исключение ValueError.
 
 **Пример кода:**
-```
+```python
 @check_that_agr_is(predicate_is_int, "Значения должны быть целыми числами")
 def my_function(x, y):
     return x + y
@@ -131,7 +128,7 @@ def my_function(x, y):
 проверяет, являются ли все переданные значения целыми числами.
 
 **Пример кода:**
-```
+```python
 def predicate_is_int(*values):
     return all(isinstance(value, int) for value in values)
 ```
@@ -140,18 +137,18 @@ def predicate_is_int(*values):
 возвращает сумму двух чисел. Она использует декораторы log и check_that_agr_is для логирования и проверки аргументов.
 
 **Пример кода:**
-```
+```python
 @log(filename="log.txt")
 @check_that_agr_is(predicate_is_int, "Значения должны быть числом")
 def my_function(x: int, y: int) -> int:
     return x + y
 ```
-### 9. Чтение файла json
+### 5. Чтение файла json
 #### Функция `outputting_transactions_from_file`
 строит путь к файлу и выводит содержимое файла, если файл не найден или он пустой возвращает пустой список.
 
 **Пример кода:**
-```
+```python
 def outputting_transactions_from_file(input_file=None) -> list:
     """Выводит транзакции из файла если найден файл с транзакциями."""
     try:
@@ -167,13 +164,13 @@ def outputting_transactions_from_file(input_file=None) -> list:
         return []
 ```
 
-### 9. Чтение файла csv и xlsx
+### 6. Чтение файла csv и xlsx
 
 #### Функция `read_file_scv`
 читает данные из CSV-файла и возвращает их в виде списка словарей
 
 **Пример кода:**
-```
+```python
 def read_file_scv(input_file: str) -> list:
     """Выводит транзакции из файла .csv в виде списка словарей"""
     project_root = os.path.dirname(os.path.dirname(__file__))
@@ -187,7 +184,7 @@ def read_file_scv(input_file: str) -> list:
 читает данные из Excel-файла и возвращает их в виде списка словарей
 
 **Пример кода:**
-```
+```python
 def read_file_xlsx(input_file: str) -> list:
     """Выводит транзакции из файла .xlsx в виде словарей"""
     project_root = os.path.dirname(os.path.dirname(__file__))
@@ -197,6 +194,45 @@ def read_file_xlsx(input_file: str) -> list:
     return reader
 ```
 
+### 7. Сортировка по ключам
+#### Функция `filter_transactions_by_description`
+фильтрует список транзакций, оставляя только те, в описании которых содержится указанная строка
+**Пример кода:**
+```python
+def filter_transactions_by_description(transactions: List, search_string: str) -> List:
+    """Возвращать список словарей, у которых в описании есть строка 'описание' (description)"""
+    filtered_transactions = []
+
+    for transaction in transactions:
+        description = transaction.get("description", "")
+        if re.search(search_string, description, re.IGNORECASE):
+            filtered_transactions.append(transaction)
+    return filtered_transactions
+
+```
+
+#### Функция `count_transactions_by_category`
+подсчитывает количество транзакций для указанных категорий. Если категории не переданы, возвращает количество всех уникальных описаний.
+**Пример кода:**
+```python
+def count_transactions_by_category(transactions: List, categories=None) -> Dict:
+    """Считает количество операций для указанной категории"""
+    descriptions = [transaction.get("description", "") for transaction in transactions]
+
+    # Если категории не переданы
+    if not categories:
+        category_count = Counter(descriptions)
+        return dict(category_count)
+
+    # Фильтруем описания по категориям
+    filtered_descriptions = [
+        desc for desc in descriptions if any(re.search(cat, desc, re.IGNORECASE) for cat in categories)
+    ]
+
+    category_count = Counter(filtered_descriptions)
+    return dict(category_count)
+
+```
 
 
 ---
@@ -224,7 +260,7 @@ assert mask_account_card('Maestro 1596837868705199') == 'Maestro 1596 83** **** 
 assert mask_account_card('Счет 64686473678894779589') == 'Счет **9589'
 ```
 ### Для `get_date`
-```
+```python
   @pytest.mark.parametrize('data, get_data', [
       ('2024-03-11T02:26:18.671407', '11.03.2024'),
       ('2024-03-11T02:26:', '11.03.2024'),
@@ -243,7 +279,7 @@ assert mask_account_card('Счет 64686473678894779589') == 'Счет **9589'
 
 ```
 ### Для `filter_by_state`
-```
+```python
 def test_filter_by_state(standart):
     assert filter_by_state(standart) == [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
                                          {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
@@ -263,7 +299,7 @@ def test_filter_by_state(standart):
                                         {'id': '', 'state': '', 'date': ''}]
 ```
 ### Для `filter_by_currency`
-```
+```python
 def test_filter_by_currency_usd(transac):
     usd_transactions = list(filter_by_currency(transac, "USD"))
     assert len(usd_transactions) == 3
@@ -291,7 +327,7 @@ def test_filter_by_currency_empty_list():
     assert len(filtered_transactions) == 0
 ```
 ### Для `transaction_descriptions`
-```
+```python
 def test_transaction_descriptions_all(transac):
     descriptions = list(transaction_descriptions(transac))
     assert len(descriptions) == 7
@@ -323,7 +359,7 @@ def test_transaction_descriptions_empty_list():
 
 ```
 ### Для `card_number_generator`
-```
+```python
 @pytest.mark.parametrize(
     "start, stop, results",
     [
@@ -360,7 +396,7 @@ def test_card_number_generator(start, stop, results):
 
 
 ### Для `my_function` 
-```
+```python
 def test_log_file_errors():
 
     @log(filename="log.txt")
@@ -375,7 +411,7 @@ def test_log_file_errors():
 ```
 
 ### Для `read_file_scv` 
-```
+```python
 @patch("builtins.open")
 @patch("csv.DictReader")
 def test_read_file_scv(mock_dictreader, mock_open_file):
@@ -386,7 +422,7 @@ def test_read_file_scv(mock_dictreader, mock_open_file):
 ```
 
 ### Для `read_file_xlsx` 
-```
+```python
 @patch("pandas.read_excel")
 def test_read_file_xlsx(mock_read_excel):
     mock_df = MagicMock()
@@ -395,6 +431,33 @@ def test_read_file_xlsx(mock_read_excel):
 
     result = read_file_xlsx("")
     assert result == [{"id": 123}, {"id": 321}]
+```
+
+### Для `filter_transactions_by_description` 
+```python
+@patch("builtins.open")
+def test_filter_transactions(mock_open, transactions):
+    mock_file = mock_open(read_data=str(transactions))
+    search_string = "Перевод"
+    filtered_transactions = filter_transactions_by_description(transactions, search_string)
+    assert len(filtered_transactions) == 3
+    assert filtered_transactions[0]["description"] == "Перевод организации"
+```
+
+### Для `count_transactions_by_category` 
+```python
+@patch("builtins.open")
+def test_count_transactions_by_category(mock_open, transactions):
+    categories = "перевод", "вклад"
+    expected_result = {
+        "Перевод организации": 1,
+        "Перевод с карты на карту": 1,
+        "Открытие вклада": 1,
+        "Перевод с карты на счет": 1
+    }
+    mock_file = mock_open(read_data=str(transactions))
+    result = count_transactions_by_category(transactions, categories)
+    assert result == expected_result
 ```
 
 
@@ -410,11 +473,16 @@ pytest tests/
 
 ```git clone https://github.com/Kilavyk/home_10_2.git```
 
-2. Перейдите в ветку с домашней работой:
+2. Установите зависимости:
+
+```pip install -r requirements.txt```
+
+
+3. Перейдите в ветку ```develop```:
 
 ```git checkout develop```
 
-3. Запустите код в вашей среде разработки или через командную строку.
+4. Запустите код в вашей среде разработки или через командную строку.
 
 ## Ссылка на GitHub
 Проект доступен на GitHub: [Kilavyk/home_10_2.](https://github.com/Kilavyk/home_10_2/)

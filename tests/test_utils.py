@@ -1,26 +1,29 @@
-import pytest
-from unittest.mock import mock_open, patch
-import os
 import json
-from src.utils import outputting_transactions_from_file  # Импорт функции
+from unittest.mock import patch, mock_open
 
-# Фикстура для мокирования путей
-@pytest.fixture
-def mock_paths(mocker):
-    # Мокируем os.path.abspath и os.path.dirname
-    mocker.patch("os.path.abspath", return_value="/fake/path/to/module.py")
-    mocker.patch("os.path.dirname", side_effect=["/fake/path/to", "/fake/path"])
+from src.utils import outputting_transactions_from_file
 
-# Тесты
-def test_file_exists_and_valid_json_list(mock_paths, mocker):
-    mocker.patch("builtins.open", mock_open(read_data=json.dumps([{"id": 1}, {"id": 2}])))
+@patch("builtins.open", new_callable=mock_open)
+def test_outputting_transactions_from_file(mock_open_file):
+    mock_data = [{"operationAmount": {"amount": "100", "currency": {"name": "Рубли", "code": "RUB"}}},
+                 {"operationAmount": {"amount": "200", "currency": {"name": "Доллары", "code": "USD"}}}]
 
-    result = outputting_transactions_from_file("operations.json")
-    assert result == [{"id": 1}, {"id": 2}]
+    mock_open_file.return_value.read.return_value = json.dumps(mock_data)
+    expected_result = [{"amount": "100", "currency_name": "Рубли", "currency_code": "RUB"},
+                       {"amount": "200", "currency_name": "Доллары", "currency_code": "USD"}]
+    result = outputting_transactions_from_file("example.json")
+    assert result == expected_result
 
+@patch("builtins.open", new_callable=mock_open)
+def test_outputting_transactions_from_file_empty(mock_open_file):
+    mock_open_file.return_value.read.return_value = json.dumps([])
+    expected_result = []
+    result = outputting_transactions_from_file("example.json")
+    assert result == expected_result
 
-def test_file_exists_but_empty(mock_paths, mocker):
-    mocker.patch("builtins.open", mock_open(read_data=""))
-
-    result = outputting_transactions_from_file("operations.json")
-    assert result == []
+@patch("builtins.open", new_callable=mock_open)
+def test_outputting_transactions_from_file_invalid_data(mock_open_file):
+    mock_open_file.return_value.read.return_value = "invalid json"
+    expected_result = []
+    result = outputting_transactions_from_file("example.json")
+    assert result == expected_result
