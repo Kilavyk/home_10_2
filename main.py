@@ -117,7 +117,7 @@ def final_list(file: list, count: dict):
                 else:
                     to_ = ""
 
-                if item.get("from") and item["from"] != "nan":
+                if item.get("from") and item["from"] == "nan":
                     from_ = mask_account_card(item["from"]) + " -> "
                 else:
                     from_ = ""
