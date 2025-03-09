@@ -90,8 +90,10 @@ def filter_by_currency(items: list, cur: str) -> list:
 
 def transaction_descriptions(items: list):
     """ Возвращает описание транзакции """
+    descriptions = []
     for item in items:
-        return item["description"]
+        descriptions.append(item["description"])
+    return descriptions
 
 
 def card_number_generator(start: int, stop: int):
@@ -121,4 +123,4 @@ def card_number_generator(start: int, stop: int):
 #
 #     usd_transactions = filter_by_currency(transactions, "USD")
 #     for operation in range(3):
-#         print(next(usd_transactions))
+#         print(usd_transactions)
