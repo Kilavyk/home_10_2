@@ -34,27 +34,27 @@ def count_transactions_by_category(transactions: List, categories=None) -> Dict:
     return dict(category_count)
 
 
-if __name__ == "__main__":
-    # Загружаем файла
-    transactions = outputting_transactions_from_file("operations.json")
-
-
-    # Фильтруем транзакций по строке 'описание' (description)
-    # Возможные варианты поиска (Перевод организации, Перевод с карты на карту, Перевод со счета на счет,
-    #                            Открытие вклада, Перевод с карты на счет)
-    filtered = filter_transactions_by_description(transactions, "Открытие вклада")
-    print(filtered)
-    #Высодим список построчно
-    for transaction in filtered:
-        print(transaction)
-
-
-    # Подсчет операций по категориям
-    categories = [
-        "вклад"
-    ]
-    counts = count_transactions_by_category(transactions, categories)
-    print(counts)
-    #Высодим список построчно
-    for category, count in counts.items():
-        print(f"{category}: {count}")
+# if __name__ == "__main__":
+#     # Загружаем файла
+#     transactions = outputting_transactions_from_file("operations.json")
+#
+#
+#     # Фильтруем транзакций по строке 'описание' (description)
+#     # Возможные варианты поиска (Перевод организации, Перевод с карты на карту, Перевод со счета на счет,
+#     #                            Открытие вклада, Перевод с карты на счет)
+#     filtered = filter_transactions_by_description(transactions, "Открытие вклада")
+#     print(filtered)
+#     #Высодим список построчно
+#     for transaction in filtered:
+#         print(transaction)
+#
+#
+#     # Подсчет операций по категориям
+#     categories = [
+#         "вклад"
+#     ]
+#     counts = count_transactions_by_category(transactions, categories)
+#     print(counts)
+#     #Высодим список построчно
+#     for category, count in counts.items():
+#         print(f"{category}: {count}")

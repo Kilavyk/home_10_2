@@ -32,3 +32,14 @@ def test_count_transactions_by_category(mock_open, transactions):
     mock_file = mock_open(read_data=str(transactions))
     result = count_transactions_by_category(transactions, categories)
     assert result == expected_result
+
+
+def test_count_transactions_by_category_no_categories(transactions):
+    expected_result = {
+        "Перевод организации": 1,
+        "Перевод с карты на карту": 1,
+        "Открытие вклада": 1,
+        "Перевод с карты на счет": 1,
+    }
+    result = count_transactions_by_category(transactions)
+    assert result == expected_result
