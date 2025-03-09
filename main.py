@@ -1,6 +1,6 @@
 from src.file_reader import read_file_scv, read_file_xlsx
 from src.generators import filter_by_currency
-from src.operations_filter import filter_transactions_by_description, count_transactions_by_category
+from src.operations_filter import count_transactions_by_category, filter_transactions_by_description
 from src.processing import filter_by_state, sort_by_date
 from src.utils import outputting_transactions_from_file
 from src.widget import get_date, mask_account_card
@@ -24,13 +24,13 @@ def selecting_processing_file():
 
         if menu_item == "1":
             print("\nДля обработки выбран JSON-файл")
-            return outputting_transactions_from_file("operations.json") # Открытие файла JSON, модуль utils.py
+            return outputting_transactions_from_file("operations.json")  # Открытие файла JSON, модуль utils.py
         elif menu_item == "2":
             print("\nДля обработки выбран CSV-файл")
-            return read_file_scv("transactions.csv") # Открытие файла CSV, модуль file_reader.py
+            return read_file_scv("transactions.csv")  # Открытие файла CSV, модуль file_reader.py
         elif menu_item == "3":
             print("\nДля обработки выбран XLSX-файл")
-            return read_file_xlsx("transactions_excel.xlsx") # Открытие файла XLSX, модуль file_reader.py
+            return read_file_xlsx("transactions_excel.xlsx")  # Открытие файла XLSX, модуль file_reader.py
         else:
             print("Некорректно указан пункт меню")
 
@@ -86,7 +86,7 @@ def filter_by_word_and_count(file: list) -> tuple[list, dict]:
         answer = input("\nОтфильтровать список транзакций по определенному слову в описании? Да/Нет\n")
         if answer.lower() == "да":
             search_string = input("Варианты фильтрации:\nПеревод организации \nПеревод с карты на карту"
-                                 "\nПеревод со счета на счет \nОткрытие вклада \nПеревод с карты на счет\n")
+                                  "\nПеревод со счета на счет \nОткрытие вклада \nПеревод с карты на счет\n")
             filter = filter_transactions_by_description(file, search_string)  # Модуль operations_file.py
             count = count_transactions_by_category(filter, search_string)  # Модуль operations_file.py
             return filter, count
@@ -110,7 +110,7 @@ def final_list(file: list, count: dict):
             if not item:
                 continue
             else:
-                date_str = get_date(item["date"]) # Модуль widget.py
+                date_str = get_date(item["date"])  # Модуль widget.py
 
                 if "to" in item:
                     to_ = mask_account_card(item["to"])
@@ -129,20 +129,19 @@ def final_list(file: list, count: dict):
 
 if __name__ == "__main__":
     # Начало работы, приветствие
-    file = main() # В переменной список транзакций из файла
+    file = main()  # В переменной список транзакций из файла
     # print(file)
 
-    file = sending_file_for_filter(file) # Выполняем фильтрацию
+    file = sending_file_for_filter(file)  # Выполняем фильтрацию
     # print(file)
 
-    file = sorting_transactions(file) # Сортировка по дате и в каком порядке
+    file = sorting_transactions(file)  # Сортировка по дате и в каком порядке
     # print(file)
 
-    file = show_rub_transactions(file) # Выводим только рублёвые операции или все
+    file = show_rub_transactions(file)  # Выводим только рублёвые операции или все
     # print(file)
 
-    file, count = filter_by_word_and_count(file) # Сортируем по ключевому слову
+    file, count = filter_by_word_and_count(file)  # Сортируем по ключевому слову
     # print(file, count)
 
-    final_list(file, count) # Выводим итоговый список
-
+    final_list(file, count)  # Выводим итоговый список
