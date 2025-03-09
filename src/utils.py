@@ -16,6 +16,7 @@ file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 
 
+
 def outputting_transactions_from_file(input_file=None) -> list:
     """Выводит транзакции из файла если найден файл с транзакциями."""
     logger.info("Функция начала работу")
@@ -28,6 +29,11 @@ def outputting_transactions_from_file(input_file=None) -> list:
             data = json.load(file)
         if isinstance(data, list):
             logger.info("Выводим результат")
+            for operation in data:
+                operation_amount = operation.pop("operationAmount") if operation.get("operationAmount") else {}
+                operation["amount"] = operation_amount.get("amount")
+                operation["currency_name"] = operation_amount.get("currency", {}).get("name")
+                operation["currency_code"] = operation_amount.get("currency", {}).get("code")
             return data
         else:
             logger.error("Файл найден, но он пустой или в нём нет списка, вернули пустой список")

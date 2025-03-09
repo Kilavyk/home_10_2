@@ -10,17 +10,26 @@ def filter_transactions_by_description(transactions: List, search_string: str) -
     filtered_transactions = []
 
     for transaction in transactions:
-        if re.search(search_string, transaction.get("description", ""), re.IGNORECASE):
+        description = transaction.get("description", "")
+        if re.search(search_string, description, re.IGNORECASE):
             filtered_transactions.append(transaction)
     return filtered_transactions
 
 
-def count_transactions_by_category(transactions: List, categories: List) -> Dict:
+def count_transactions_by_category(transactions: List, categories=None) -> Dict:
     """ Считает количество операций для указанной категории """
     descriptions = [transaction.get("description", "") for transaction in transactions]
 
-    filtered_descriptions = [desc for desc in descriptions if
-                             any(re.search(cat, desc, re.IGNORECASE) for cat in categories)]
+    # Если категории не переданы
+    if not categories:
+        category_count = Counter(descriptions)
+        return dict(category_count)
+
+    # Фильтруем описания по категориям
+    filtered_descriptions = [
+        desc for desc in descriptions
+        if any(re.search(cat, desc, re.IGNORECASE) for cat in categories)]
+
     category_count = Counter(filtered_descriptions)
     return dict(category_count)
 
@@ -42,11 +51,7 @@ if __name__ == "__main__":
 
     # Подсчет операций по категориям
     categories = [
-        "Перевод организации",
-        "Перевод с карты на карту",
-        "Перевод со счета на счет",
-        "Открытие вклада",
-        "Перевод с карты на счет"
+        "вклад"
     ]
     counts = count_transactions_by_category(transactions, categories)
     print(counts)
