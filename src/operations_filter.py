@@ -6,7 +6,7 @@ from src.utils import outputting_transactions_from_file
 
 
 def filter_transactions_by_description(transactions: List, search_string: str) -> List:
-    """ Возвращать список словарей, у которых в описании есть строка 'описание' (description) """
+    """Возвращать список словарей, у которых в описании есть строка 'описание' (description)"""
     filtered_transactions = []
 
     for transaction in transactions:
@@ -17,7 +17,7 @@ def filter_transactions_by_description(transactions: List, search_string: str) -
 
 
 def count_transactions_by_category(transactions: List, categories=None) -> Dict:
-    """ Считает количество операций для указанной категории """
+    """Считает количество операций для указанной категории"""
     descriptions = [transaction.get("description", "") for transaction in transactions]
 
     # Если категории не переданы
@@ -27,8 +27,8 @@ def count_transactions_by_category(transactions: List, categories=None) -> Dict:
 
     # Фильтруем описания по категориям
     filtered_descriptions = [
-        desc for desc in descriptions
-        if any(re.search(cat, desc, re.IGNORECASE) for cat in categories)]
+        desc for desc in descriptions if any(re.search(cat, desc, re.IGNORECASE) for cat in categories)
+    ]
 
     category_count = Counter(filtered_descriptions)
     return dict(category_count)

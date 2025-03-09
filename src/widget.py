@@ -15,8 +15,8 @@ def mask_account_card(info: str) -> str:
 def get_date(date_time: str) -> str:
     """Функция возвращает день, месяц, год"""
     try:
-        date_part = date_time.split('T')[0]
-        year, month, day = date_part.split('-')
+        date_part = date_time.split("T")[0]
+        year, month, day = date_part.split("-")
 
         if not (year.isdigit() and month.isdigit() and day.isdigit()):
             return "Некорректная дата"

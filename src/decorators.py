@@ -4,6 +4,7 @@ from functools import wraps
 
 def log(filename=None):
     """Формирование текст об успешном выполнении функции и возникшие ошибки"""
+
     def decorator(func):
         @wraps(func)  # Сохраняем метаданные оригинальной функции
         def wrapper(*args, **kwargs):
@@ -18,14 +19,16 @@ def log(filename=None):
                 error_masseng = f"{data_now} --> {type(error).__name__}: --> {args}, {kwargs}"
                 write_log(error_masseng, filename)
                 raise error
+
         return wrapper
+
     return decorator
 
 
 def write_log(messeng, filename):
     """Записывает сообщение в файл или выводит его в консоль"""
     if filename:
-        with open(filename, "a", encoding="utf-8",) as file:
+        with open(filename, "a", encoding="utf-8") as file:
             file.write(f"{messeng}\n")
     else:
         print(messeng)
@@ -33,13 +36,16 @@ def write_log(messeng, filename):
 
 def check_that_agr_is(predicate, error_message):
     """Декоратор для проверки аргументов функции с помощью предиката"""
+
     def wrapper(function):
         @wraps(function)  # Сохраняем метаданные оригинальной функции
         def inner(a, b):
             if not predicate(a, b):
                 raise ValueError(error_message)
             return function(a, b)
+
         return inner
+
     return wrapper
 
 

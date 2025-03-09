@@ -11,10 +11,9 @@ log_file = os.path.join(logs_dir, "utils.log")
 logger = logging.getLogger("utils")
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler(log_file, encoding="utf-8", mode="w")
-file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(message)s')
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
-
 
 
 def outputting_transactions_from_file(input_file=None) -> list:
